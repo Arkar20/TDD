@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Filters;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class ThreadFilter extends Filters
+{
+    public function by($username)
+    {
+        $user = User::where('name', $username)->firstOrFail();
+
+        return $this->builders->where('user_id', $user->id);
+    }
+}
