@@ -62,4 +62,28 @@ class ThreadTest extends TestCase
         // see the thread of the user
         // dont see the other thread
     }
+    /** @test */
+    public function threads_can_be_filtered_by_popular()
+    {
+        //sigin
+
+        $threadFor2Replies = create(Thread::class);
+        $threadWith2Replies = Reply::factory()
+            ->count(2)
+            ->create(['thread_id' => $threadFor2Replies->id]);
+
+        $threadFor3Replies = create(Thread::class);
+        $threadWith3Replies = Reply::factory()
+            ->count(3)
+            ->create(['thread_id' => $threadFor3Replies->id]);
+
+        $threadWithNoReplies = $this->thread;
+        //create 3 threads with 3 replies, 2 replies, 0 replies
+        $responese = $this->getJson('/threads?popular=1')->json();
+        //go the the url and see
+        $this->assertEquals(
+            [3, 2, 0],
+            array_column($responese, 'replies_count')
+        );
+    }
 }

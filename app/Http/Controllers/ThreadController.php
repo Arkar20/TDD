@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Filters\ThreadFilter;
 use App\Models\User;
 use App\Models\Thread;
 use App\Models\Channel;
 use Illuminate\Http\Request;
+use App\Filters\ThreadFilter;
+use Illuminate\Support\Facades\DB;
 
 class ThreadController extends Controller
 {
@@ -22,7 +23,14 @@ class ThreadController extends Controller
         } else {
             $threads = Thread::latest();
         }
+
         $threads = $threads->filter($filters)->get();
+        if (request()->wantsJson()) {
+            return $threads;
+        }
+
+        // $threads = DB::getQueryLog();
+        // dd($threads);
 
         // if ($username = request('by')) {
         //     $user = User::where('name', $username)->firstOrFail();

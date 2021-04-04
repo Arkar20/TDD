@@ -18,10 +18,10 @@ abstract class Filters
     {
         $this->builders = $builders;
 
-        foreach ($this->filters as $filter) {
-            if ($this->hasFilters($filter)) {
+        foreach ($this->getRequest() as $filter => $value) {
+            if (method_exists($this, $filter)) {
                 // dd('hello true');
-                $this->$filter($this->request->$filter);
+                $this->$filter($value);
             }
         }
         // if ($this->request->has('by')) {
@@ -32,5 +32,9 @@ abstract class Filters
     private function hasFilters($filter): bool
     {
         return method_exists($this, $filter) && $this->request->has($filter);
+    }
+    private function getRequest()
+    {
+        return $this->request->only($this->filters);
     }
 }

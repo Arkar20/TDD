@@ -3,11 +3,16 @@
         <div>Threads</div>
         
     @endslot
-    <div class="mx-10 my-10">
-        @foreach ($threads as $thread)
-            @include('threads.section.threadblock')
-        @endforeach
+
+<div   class="threads-block mx-10 my-10">
+            @foreach ($threads as $thread)
+                @include('threads.section.threadblock')
+            @endforeach
+        </div>
+
+        </div>
     </div>
+        
 {{-- 
     <div class=" pb-10 border-b border-gray-400 mx-10">
         {{$threads->links()}}
