@@ -16,12 +16,21 @@ class ThreadController extends Controller
     }
     public function index(Channel $channel = null, ThreadFilter $filters)
     {
+        // dd($channel);
         if ($channel) {
             $threads = $channel->threads()->latest();
         } else {
             $threads = Thread::latest();
         }
         $threads = $threads->filter($filters)->get();
+
+        // if ($username = request('by')) {
+        //     $user = User::where('name', $username)->firstOrFail();
+        //     $threads->where('user_id', $user->id);
+        // }
+        // $threads = $threads->paginate(10);
+
+        // $threads = Thread::filter($filters)->get();
         return view('threads.index', compact('threads'));
     }
 

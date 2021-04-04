@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class ThreadFilter extends Filters
 {
+    protected $filters = ['by'];
     public function by($username)
     {
         $user = User::where('name', $username)->firstOrFail();
