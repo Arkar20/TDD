@@ -1,6 +1,19 @@
 <x-app-layout>
     @slot('header')
-        <div>Thread single</div>
+        <div class="text-2xl font-semibold tracking-wide uppercase flex justify-between">
+            <p>A thread created by 
+                <span class="text-blue-400">
+                    {{$thread->author->name}}
+                </span>
+            </p>
+            <form action="{{$thread->path()}}" method="POST">
+                @csrf
+                @method('DELETE')
+                <x-button type="submit" class="bg-red-500">
+                        Delete
+                </x-button>
+            </form>
+        </div>
         
     @endslot
         <div class="flex justify-center">
@@ -25,8 +38,9 @@
                     <div class="mx-10 my-10"> 
                                <div class="bg-white rounded-md shadow  mb-4 px-4 py-6">
                                 This thread was created at {{$thread->created_at->diffForHumans()}} 
-                                by {{$thread->author->name}} 
-                                and has {{$thread->replies_count}} {{Str::plural('reply',$thread->replies_count)}}
+                                by
+                                <span class="italic text-blue-400"> {{$thread->author->name}}</span> 
+                                and has <span class="italic text-blue-400">  {{$thread->replies_count}} {{Str::plural('reply',$thread->replies_count)}}.</span> 
                     </div>
         </div>
         </div>

@@ -86,4 +86,21 @@ class ThreadTest extends TestCase
             array_column($responese, 'replies_count')
         );
     }
+    /** @test */
+    public function authorized_user_can_delete_a_thread()
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+        $thread = create(Thread::class, ['user_id' => auth()->id()]);
+        $reply = create(Reply::class, ['thread_id' => $thread->id]);
+        $this->json('DELETE', $thread->path())->assertStatus(204);
+        $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
+    }
+    /** @test */
+    public function unauthorized_user_cannot_delete_a_thread()
+    {
+        $this->signIn();
+        $thread = create(Thread::class);
+        $this->delete($thread->path())->assertStatus(403);
+    }
 }

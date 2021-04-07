@@ -12,6 +12,7 @@ class Thread extends Model
     use HasFactory;
 
     protected $fillable = ['user_id', 'title', 'body', 'channel_id'];
+    protected $with = ['author', 'channel'];
 
     public function path()
     {
@@ -32,7 +33,7 @@ class Thread extends Model
     }
     public function replies()
     {
-        return $this->hasMany(Reply::class);
+        return $this->hasMany(Reply::class)->withCount('favourites');
     }
     public function addReply($reply)
     {
