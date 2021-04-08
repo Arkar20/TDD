@@ -3,23 +3,31 @@
 namespace App\Models;
 
 use App\Models\Favourite;
+use App\Models\RecordActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Reply extends Model
 {
-    use HasFactory;
+    use HasFactory, RecordActivity;
 
     protected $fillable = ['body', 'user_id', 'thread_id'];
-    protected $with = ['owner', 'favourites'];
+    protected $with = ['owner', 'favourites', 'thread'];
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
+    public function thread()
+    {
+        return $this->belongsTo(Thread::class);
+    }
     public function favourites()
     {
         return $this->morphMany(Favourite::class, 'favourited');
+    }
+    public function activity()
+    {
+        return $this->morphMany(Activity::class, 'subject');
     }
     public function makeFavourite()
     {

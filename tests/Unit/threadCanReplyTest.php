@@ -16,6 +16,7 @@ class threadCanReplyTest extends TestCase
      */
     public function test_thread_can_reply()
     {
+        $this->signIn();
         $thread = Thread::factory()->create();
         $thread->addReply([
             'body' => 'foo_bar',

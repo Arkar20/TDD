@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Reply;
+use App\Models\Thread;
+use App\Models\Activity;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,10 +36,17 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    public function threads()
+    {
+        return $this->hasMany(Thread::class);
+    }
     public function reply()
     {
         return $this->hasMany(Reply::class);
+    }
+    public function activity()
+    {
+        return $this->hasMany(Activity::class);
     }
     public function getRouteKeyName()
     {

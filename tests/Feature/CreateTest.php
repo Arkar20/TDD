@@ -9,6 +9,7 @@ use App\Models\Thread;
 
 use App\Models\Channel;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Auth;
 
 class CreateTest extends TestCase
 {
@@ -20,17 +21,14 @@ class CreateTest extends TestCase
      */
     public $thread;
     public $user;
-    function setUp(): void
-    {
-        parent::setUp();
-        $this->thread = create(Thread::class);
-        $this->user = create(User::class);
-    }
 
     public function test_guest_cannot_create_thread()
     {
+        $this->signIn();
         // $this->withoutExceptionHandling();
         $thread = create(Thread::class);
+
+        Auth::logout();
         $this->post('/threads', $thread->toArray())->assertRedirect('/login');
     }
     public function test_auth_user_can_create_thread()

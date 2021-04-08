@@ -17,17 +17,14 @@ class ThreadController extends Controller
     }
     public function index(Channel $channel = null, ThreadFilter $filters)
     {
-        // dd($channel);
         if ($channel) {
             $threads = $channel->threads()->latest();
         } else {
             $threads = Thread::latest();
         }
 
-        $threads = $threads
-            ->filter($filters)
+        $threads = $threads->filter($filters)->paginate(10);
 
-            ->get();
         if (request()->wantsJson()) {
             return $threads;
         }
@@ -125,7 +122,6 @@ class ThreadController extends Controller
      */
     public function destroy($channel, Thread $thread)
     {
-        $this->authorize('update', $thread);
         $thread->delete();
 
         if (request()->wantsJson()) {

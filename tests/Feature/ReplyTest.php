@@ -5,9 +5,10 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\Reply;
 use App\Models\Thread;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ReplyTest extends TestCase
 {
@@ -18,41 +19,36 @@ class ReplyTest extends TestCase
      * @test
      * @return void
      */
+    public $thread;
+    public $reply;
+
+    function setUp(): void
+    {
+        parent::setUp();
+        $this->signIn();
+        $this->thread = create(Thread::class);
+        $this->reply = create(Reply::class, ['thread_id' => $this->thread->id]);
+    }
     public function user_can_view_comments()
     {
-        //thread has comments
-        $this->signIn();
-
-        // $this->withoutExceptionHandling();
-        $thread = create(Thread::class);
-        $reply = Reply::factory()->create(['thread_id' => $thread->id]);
-
-        $this->get($thread->path())->assertSee($reply->body);
+        $this->get($this->thread->path())->assertSee($this->reply->body);
     }
     /**  @test*/
     public function unauthenticated_user_cannot_reply()
     {
-        $thread = create(Thread::class);
-        $reply = create(Reply::class);
-
+        $reply = make(Reply::class);
+        Auth::logout();
         $this->post(
-            $thread->path() . '/replies',
+            $this->thread->path() . '/replies',
             $reply->toArray()
         )->assertRedirect('/login');
     }
     public function test_authenticated_user_can_reply_thread()
     {
-        // authenticate the user
-        // $this->withExceptionHandling();
+        $reply = make(Reply::class);
 
-        $thread = create(Thread::class);
-        $this->signIn();
+        $this->post($this->thread->path() . '/replies', $reply->toArray());
 
-        $reply = Reply::factory()->make(['thread_id' => $thread->id]);
-        $this->withoutExceptionHandling()->post(
-            $thread->path() . '/replies',
-            $reply->toArray()
-        );
-        $this->get($thread->path())->assertSee($reply->body);
+        $this->get($this->thread->path())->assertSee($reply->body);
     }
 }

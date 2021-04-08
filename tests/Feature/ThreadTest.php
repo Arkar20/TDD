@@ -23,11 +23,12 @@ class ThreadTest extends TestCase
     function setUp(): void
     {
         parent::setUp();
-        $this->thread = create(Thread::class);
+        $this->signIn();
         $this->user = create(User::class);
+        $this->thread = create(Thread::class);
     }
-
-    public function test_a_thread_has_channel_url()
+    /** @test */
+    public function a_thread_has_channel_url()
     {
         $thread = create(Thread::class);
         // dd($thread);
@@ -36,19 +37,20 @@ class ThreadTest extends TestCase
             $thread->path()
         );
     }
-    public function test_user_can_view_threads()
+    /** @test */
+    public function user_can_view_threads()
     {
         $this->get('/threads')->assertSee($this->thread->title);
     }
     public function test_user_can_view_single_thread()
     {
-        $this->signIn();
         $this->get($this->thread->path())->assertSee($this->thread->body);
     }
     /** @test */
     public function thread_can_be_filtered_by_username()
     {
         // $this->signIn(User::class, ['name' => 'Foo']);
+        $this->signIn();
         $user = create(User::class, ['name' => 'Foo']);
         $this->be($user);
         // create the thread by the user id
@@ -80,27 +82,38 @@ class ThreadTest extends TestCase
         $threadWithNoReplies = $this->thread;
         //create 3 threads with 3 replies, 2 replies, 0 replies
         $responese = $this->getJson('/threads?popular=1')->json();
-        //go the the url and see
+        // dd($responese);
+        // go the the url and see
         $this->assertEquals(
             [3, 2, 0],
-            array_column($responese, 'replies_count')
+            array_column($responese['data'], 'replies_count')
         );
     }
     /** @test */
     public function authorized_user_can_delete_a_thread()
     {
-        $this->withoutExceptionHandling();
         $this->signIn();
         $thread = create(Thread::class, ['user_id' => auth()->id()]);
         $reply = create(Reply::class, ['thread_id' => $thread->id]);
         $this->json('DELETE', $thread->path())->assertStatus(204);
         $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
+        $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+        $this->assertDatabaseMissing('activities', [
+            'subject_id' => $thread->id,
+            'subject_type' => get_class($thread),
+        ]);
+        // $this->assertDatabaseMissing('activities', [
+        //     'subject_id' => $reply->id,
+        //     'subject_type' => get_class($reply),
+        // ]);
     }
     /** @test */
     public function unauthorized_user_cannot_delete_a_thread()
     {
-        $this->signIn();
-        $thread = create(Thread::class);
-        $this->delete($thread->path())->assertStatus(403);
+        $newUser = create(User::class);
+
+        // dd($newUser);
+        $thread = create(Thread::class, ['user_id' => $newUser->id]);
+        $this->delete($this->thread->path())->assertStatus(302);
     }
 }

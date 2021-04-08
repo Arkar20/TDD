@@ -9,6 +9,7 @@
             </a>   
             <div>
                 {{$reply->favourites_count}} {{Str::plural('favourites',$reply->favourites_count)}}      
+               
                 <form action="{{ route('reply.favourite', $reply->id) }}" method="POST">
                     @csrf
                            <button type="submit" 

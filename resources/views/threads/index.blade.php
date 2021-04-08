@@ -13,10 +13,10 @@
         </div>
     </div>
         
-{{-- 
+
     <div class=" pb-10 border-b border-gray-400 mx-10">
         {{$threads->links()}}
-    </div> --}}
+    </div>
 
     <div class="sigin mb-10 ">
         @if (!auth()->check())   

@@ -16,6 +16,12 @@ class ThreadAuthorTest extends TestCase
      *
      * @return void
      */
+
+    function setUp(): void
+    {
+        parent::setUp();
+        $this->signIn();
+    }
     public function test_thread_has_author()
     {
         $thread = create(Thread::class);

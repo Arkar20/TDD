@@ -18,6 +18,7 @@ class ChannelTest extends TestCase
     public function a_channel_has_many_threads()
     {
         // create a channel
+        $this->signIn();
         $channel = create(Channel::class);
         // dd($channel);
         // create the thread based on that channal

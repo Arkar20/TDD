@@ -6,13 +6,16 @@
                     {{$thread->author->name}}
                 </span>
             </p>
+            @can('update', $thread)
             <form action="{{$thread->path()}}" method="POST">
                 @csrf
                 @method('DELETE')
                 <x-button type="submit" class="bg-red-500">
                         Delete
                 </x-button>
-            </form>
+            </form>    
+            @endcan
+            
         </div>
         
     @endslot
