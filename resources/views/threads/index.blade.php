@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <example-component />
-<div   class="threads-block mx-10 my-10">
+<div class="threads-block  ">
             @foreach ($threads as $thread)
                 @include('threads.section.threadblock')
             @endforeach
@@ -11,10 +10,10 @@
         </div>
     </div>
         
-
-    <div class="mx-auto">
+{{-- 
+    <div class="">
         {{$threads->links()}}
-    </div>
+    </div> --}}
 
     <div class="sigin mb-10 ">
         @if (!auth()->check())   
