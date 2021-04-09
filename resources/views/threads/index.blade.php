@@ -1,9 +1,7 @@
-<x-app-layout>
-    @slot('header')
-        <div>Threads</div>
-        
-    @endslot
+@extends('layouts.app')
 
+@section('content')
+    <example-component />
 <div   class="threads-block mx-10 my-10">
             @foreach ($threads as $thread)
                 @include('threads.section.threadblock')
@@ -14,7 +12,7 @@
     </div>
         
 
-    <div class=" pb-10 border-b border-gray-400 mx-10">
+    <div class="mx-auto">
         {{$threads->links()}}
     </div>
 
@@ -27,4 +25,5 @@
             @endif
     </div>
    
-</x-app-layout>
+@endsection
+    
